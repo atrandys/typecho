@@ -83,6 +83,13 @@ check_domain(){
 	[ -z "${yn}" ] && yn="y"
 	if [[ $yn == [Yy] ]]; then
             green "强制继续运行脚本"
+	    sleep 1s
+	    download_typecho
+	    install_php7
+    	    install_mysql
+    	    install_nginx
+	    config_php
+    	    install_typecho
 	else
 	    exit 1
 	fi
