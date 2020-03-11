@@ -319,7 +319,7 @@ install_typecho(){
     #sed -i "s/database_name_here/wordpress_db/;s/username_here/root/;s/password_here/$mysqlpasswd/;" /usr/share/nginx/html/wp-config.php
     #echo "define('FS_METHOD', "direct");" >> /usr/share/nginx/html/wp-config.php
     chown -R nginx:root /usr/share/nginx/html/
-    #chmod -R 777 /usr/share/nginx/html/wp-content
+    chmod -R 777 /usr/share/nginx/html/
     green "======================================="
     green "数据库名   ： typecho"
     green "数据库用户 ： root"
