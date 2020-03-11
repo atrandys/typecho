@@ -42,14 +42,15 @@ fi
 }
 
 disable_selinux(){
-    firestatus=systemctl status firewalld | grep "Active: active"
-    if [ -n $firestatus ]; then
-        
+    firestatus=`systemctl status firewalld | grep "Active: active"`
+    if [[ ! -z $firestatus ]]; then
+        green "检测到firewall开启状态，添加放行80/443端口规则"
+        firewall-cmd --zone=public --add-port=80/tcp --permanent
+	firewall-cmd --zone=public --add-port=443/tcp --permanent
     fi
-    systemctl stop firewalld
-    systemctl disable firewalld
     CHECK=$(grep SELINUX= /etc/selinux/config | grep -v "#")
     if [ "$CHECK" != "SELINUX=disabled" ]; then
+        green "检测到SELinux开启状态，添加放行80/443端口规则"
         semanage port -a -t http_port_t -p tcp 80
         semanage port -a -t http_port_t -p tcp 443
     fi
@@ -64,7 +65,7 @@ check_domain(){
     local_addr=`curl ipv4.icanhazip.com`
     if [ $real_addr == $local_addr ] ; then
     	green "============================="
-	green "域名解析正常，开始安装wordpress"
+	green "域名解析正常，开始安装typecho"
 	green "============================="
 	sleep 1s
 	download_wp
@@ -76,9 +77,15 @@ check_domain(){
     else
         red "================================"
 	red "域名解析地址与本VPS IP地址不一致"
-	red "本次安装失败，请确保域名解析正常"
+	red "若你确认解析成功你可强制脚本继续运行"
 	red "================================"
-	exit 1
+	read -p "是否强制运行 ?请输入 [Y/n] :" yn
+	[ -z "${yn}" ] && yn="y"
+	if [[ $yn == [Yy] ]]; then
+            green "强制继续运行脚本"
+	else
+	    exit 1
+	fi
     fi
 }
 
