@@ -22,21 +22,21 @@ function byellow(){
 #判断系统
 check_os(){
 if [ ! -e '/etc/redhat-release' ]; then
-red "==============="
-red " 仅支持CentOS7"
-red "==============="
+    red "==============="
+    red " 仅支持CentOS7"
+    red "==============="
 exit
 fi
 if  [ -n "$(grep ' 6\.' /etc/redhat-release)" ] ;then
-red "==============="
-red " 仅支持CentOS7"
-red "==============="
+    red "==============="
+    red " 仅支持CentOS7"
+    red "==============="
 exit
 fi
 if  [ -n "$(grep ' 8\.' /etc/redhat-release)" ] ;then
-red "==============="
-red " 仅支持CentOS7"
-red "==============="
+    red "==============="
+    red " 仅支持CentOS7"
+    red "==============="
 exit
 fi
 }
