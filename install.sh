@@ -333,12 +333,12 @@ uninstall_typecho(){
 
 start_menu(){
     clear
-    green "======================================="
-    green " 介绍：适用于CentOS7，一键安装Typecho"
-    green " 作者：atrandys"
-    green " 网站：www.atrandys.com"
-    green " Youtube：Randy's 堡垒"
-    green "======================================="
+    green "========================================"
+    green " 介绍    ： 适用于CentOS7，一键安装Typecho"
+    green " 作者    ： atrandys"
+    green " 网站    ： www.atrandys.com"
+    green " Youtube ： Randy's 堡垒"
+    green "========================================"
     green "1. 安装typecho"
     red "2. 卸载typecho"
     yellow "0. 退出脚本"
