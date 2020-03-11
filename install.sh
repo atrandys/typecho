@@ -163,7 +163,7 @@ expect "database and access" {send "Y\r"}
 expect "Reload privilege tables" {send "Y\r"}
 spawn mysql -u root -p
 expect "Enter password" {send "$mysqlpasswd\r"}
-expect "mysql" {send "create database typecho_db;\r"}
+expect "mysql" {send "create database typecho;\r"}
 expect "mysql" {send "exit\r"}
 EOF
 
@@ -321,7 +321,7 @@ install_typecho(){
     chown -R nginx:root /usr/share/nginx/html/
     #chmod -R 777 /usr/share/nginx/html/wp-content
     green "======================================="
-    green "数据库名   ： typecho_db"
+    green "数据库名   ： typecho"
     green "数据库用户 ： root"
     green "数据库密码 ： $mysqlpasswd"
     green "请访问域名，使用以上参数完成typecho安装"
