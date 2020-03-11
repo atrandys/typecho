@@ -68,12 +68,12 @@ check_domain(){
 	green "域名解析正常，开始安装typecho"
 	green "============================="
 	sleep 1s
-	download_wp
+	download_typecho
 	install_php7
     	install_mysql
     	install_nginx
 	config_php
-    	install_wp
+    	install_typecho
     else
         red "================================"
 	red "域名解析地址与本VPS IP地址不一致"
@@ -105,7 +105,7 @@ install_php7(){
     green "=========="
     sleep 1
     rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
-    yum -y install php70w php70w-mysql php70w-gd php70w-xml php70w-fpm
+    yum -y install php70w php70w-mysql php70w-gd php70w-xml php70w-fpm php70w-mbstring
     service php-fpm start
     chkconfig php-fpm on
     if [ `yum list installed | grep php70 | wc -l` -ne 0 ]; then
@@ -156,10 +156,11 @@ expect "database and access" {send "Y\r"}
 expect "Reload privilege tables" {send "Y\r"}
 spawn mysql -u root -p
 expect "Enter password" {send "$mysqlpasswd\r"}
-expect "mysql" {send "create database wordpress_db;\r"}
+expect "mysql" {send "create database typecho_db;\r"}
 expect "mysql" {send "exit\r"}
 EOF
 
+echo
 
 }
 
@@ -275,57 +276,53 @@ config_php(){
 }
 
 
-download_wp(){
+download_typecho(){
 
     yum -y install  wget
-    mkdir /usr/share/wordpresstemp
-    cd /usr/share/wordpresstemp/
-    wget https://cn.wordpress.org/latest-zh_CN.zip
-    if [ ! -f "/usr/share/wordpresstemp/latest-zh_CN.zip" ]; then
-        red "从cn官网下载wordpress失败，尝试从github下载……"
-	      wget https://github.com/atrandys/wordpress/raw/master/latest-zh_CN.zip    
-    fi
-    if [ ! -f "/usr/share/wordpresstemp/latest-zh_CN.zip" ]; then
-	      red "我它喵的从github下载wordpress也失败了，请尝试手动安装……"
-	      green "从wordpress官网下载包然后命名为latest-zh_CN.zip，新建目录/usr/share/wordpresstemp/，上传到此目录下即可"
-	      exit 1
+    mkdir /usr/share/typechotemp
+    cd /usr/share/typechotemp/
+    wget http://typecho.org/downloads/1.1-17.10.30-release.tar.gz
+    if [ ! -f "/usr/share/typechotemp/1.1-17.10.30-release.tar.gz" ]; then
+        red "下载typecho软件包失败，退出安装."
+        exit 1
     fi
 }
 
-install_wp(){
+install_typecho(){
 
     green "===================="
-    green "  7.安装wordpress"
+    green "  7.安装typecho"
     green "===================="
     echo
     echo
     sleep 1
     cd /usr/share/nginx/html
-    mv /usr/share/wordpresstemp/latest-zh_CN.zip ./
-    unzip latest-zh_CN.zip
-    mv wordpress/* ./
+    mv /usr/share/typechotemp/1.1-17.10.30-release.tar.gz ./
+    tar xvf 1.1-17.10.30-release.tar.gz
+    mv build/* ./
     cp wp-config-sample.php wp-config.php
     green "===================="
-    green "  8.配置wordpress"
+    green "  8.配置typecho参数"
     green "===================="
     echo
     echo
     sleep 1
-    sed -i "s/database_name_here/wordpress_db/;s/username_here/root/;s/password_here/$mysqlpasswd/;" /usr/share/nginx/html/wp-config.php
-    echo "define('FS_METHOD', "direct");" >> /usr/share/nginx/html/wp-config.php
+    #sed -i "s/database_name_here/wordpress_db/;s/username_here/root/;s/password_here/$mysqlpasswd/;" /usr/share/nginx/html/wp-config.php
+    #echo "define('FS_METHOD', "direct");" >> /usr/share/nginx/html/wp-config.php
     chown -R nginx:root /usr/share/nginx/html/
-    chmod -R 777 /usr/share/nginx/html/wp-content
-    green "==========================================================="
-    green " WordPress服务端配置已完成，请打开浏览器访问您的域名进行前台配置"
-    green " 数据库密码等信息参考文件：/usr/share/nginx/html/wp-config.php"
-    green "==========================================================="
+    #chmod -R 777 /usr/share/nginx/html/wp-content
+    green "================================="
+    green "数据库名   ： typecho_db"
+    green "数据库用户 ： root"
+    green "数据库密码 ： $mysqlpasswd"
+    green "================================="
 }
 
-uninstall_wp(){
+uninstall_typecho(){
     red "============================================="
-    red "你的wordpress数据将全部丢失！！你确定要卸载吗？"
+    red "你的typecho数据将全部丢失！！你确定要卸载吗？"
     read -s -n1 -p "按回车键开始卸载，按ctrl+c取消"
-    yum remove -y php70w php70w-mysql php70w-gd php70w-xml php70w-fpm mysql nginx
+    yum remove -y php70w php70w-mysql php70w-gd php70w-xml php70w-fpm mysql nginx php70w-mbstring
     rm -rf /usr/share/nginx/html/*
     rm -rf /var/lib/mysql
     rm -rf /usr/share/mysql
@@ -337,13 +334,13 @@ uninstall_wp(){
 start_menu(){
     clear
     green "======================================="
-    green " 介绍：适用于CentOS7，一键安装wordpress"
+    green " 介绍：适用于CentOS7，一键安装Typecho"
     green " 作者：atrandys"
     green " 网站：www.atrandys.com"
     green " Youtube：Randy's 堡垒"
     green "======================================="
-    green "1. 一键安装wordpress"
-    red "2. 卸载wordpress"
+    green "1. 安装typecho"
+    red "2. 卸载typecho"
     yellow "0. 退出脚本"
     echo
     read -p "请输入数字:" num
