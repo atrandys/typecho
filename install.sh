@@ -75,10 +75,10 @@ check_domain(){
 	config_php
     	install_typecho
     else
-        red "================================"
+        red "===================================="
 	red "域名解析地址与本VPS IP地址不一致"
 	red "若你确认解析成功你可强制脚本继续运行"
-	red "================================"
+	red "===================================="
 	read -p "是否强制运行 ?请输入 [Y/n] :" yn
 	[ -z "${yn}" ] && yn="y"
 	if [[ $yn == [Yy] ]]; then
@@ -217,7 +217,9 @@ http {
     include /etc/nginx/conf.d/*.conf;
 }
 EOF
-
+    green "==============="
+    green " 申请https证书"
+    green "==============="
     curl https://get.acme.sh | sh
     ~/.acme.sh/acme.sh  --issue  -d $your_domain  --standalone
     ~/.acme.sh/acme.sh  --installcert  -d  $your_domain   \
@@ -307,7 +309,7 @@ install_typecho(){
     mv /usr/share/typechotemp/1.1-17.10.30-release.tar.gz ./
     tar xvf 1.1-17.10.30-release.tar.gz
     mv build/* ./
-    cp wp-config-sample.php wp-config.php
+    #cp wp-config-sample.php wp-config.php
     green "===================="
     green "  8.配置typecho参数"
     green "===================="
@@ -318,11 +320,12 @@ install_typecho(){
     #echo "define('FS_METHOD', "direct");" >> /usr/share/nginx/html/wp-config.php
     chown -R nginx:root /usr/share/nginx/html/
     #chmod -R 777 /usr/share/nginx/html/wp-content
-    green "================================="
+    green "======================================="
     green "数据库名   ： typecho_db"
     green "数据库用户 ： root"
     green "数据库密码 ： $mysqlpasswd"
-    green "================================="
+    green "请访问域名，使用以上参数完成typecho安装"
+    green "======================================="
 }
 
 uninstall_typecho(){
@@ -341,7 +344,7 @@ uninstall_typecho(){
 start_menu(){
     clear
     green "========================================"
-    green " 介绍    ： 适用于CentOS7，一键安装Typecho"
+    green " 介绍    ： CentOS7一键安装Typecho"
     green " 作者    ： atrandys"
     green " 网站    ： www.atrandys.com"
     green " Youtube ： Randy's 堡垒"
@@ -365,7 +368,7 @@ start_menu(){
 	;;
 	*)
 	clear
-	echo "请输入正确数字"
+	green "请输入正确数字"
 	sleep 2s
 	start_menu
 	;;
